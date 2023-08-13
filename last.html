@@ -68,6 +68,10 @@
       </div>
   
     </form>
+
+
+    <a href="index.html"  class="btn btn-secondary">Tillbaka till översikt</a>
+
     </div>
 
 
@@ -105,6 +109,10 @@ function getQueryParams(url) {
 var params = getQueryParams();
 
 $("#grundtomvikt").val(params["grundtomvikt"]);
+if($("#grundtomvikt").val() == 0 || $("#grundtomvikt").val() == "") {
+  $("#grundtomvikt").val(272.7);
+}
+
 $("#pilot").val(params["pilot"]);
 $("#bagage").val(params["bagage"]);
 $("#fuel").val(params["fuel"]);
