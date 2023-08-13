@@ -23,7 +23,7 @@
   <body>
     <div class="container">
     <h1>Lastbesked WT9 Dynamic</h1>
-    <p>Alla vikter anges i kg.</p>
+    <p>Alla vikter anges i kg. Bränselmängd anges i L.</p>
     
     <form class="">
 
@@ -51,15 +51,16 @@
         <small id="emailHelp" class="form-text text-muted">Provide one or multiple runway numbers. If you enter multiple runways, separate them with a comma.</small>
       </div>
 
+      <!--
       <div class="form-group">
         <label for="">Beräknad viktminskning</label>
         <input type="number" class="form-control" name="decreaseweight" id="decreaseweight" aria-describedby="emailHelp" placeholder="E.g. 12 or 12, 33" step="any">
         <small id="emailHelp" class="form-text text-muted">Provide one or multiple runway numbers. If you enter multiple runways, separate them with a comma.</small>
       </div>
+-->
 
 
-
-      <input type="submit" class="btn btn-primary" value="Beräkna sidvindskomposant"/>
+      <input type="submit" class="btn btn-primary" value="Beräkna TP värden"/>
 
       <br/><br/><br/>
       <div class="" >
@@ -107,7 +108,7 @@ $("#grundtomvikt").val(params["grundtomvikt"]);
 $("#pilot").val(params["pilot"]);
 $("#bagage").val(params["bagage"]);
 $("#fuel").val(params["fuel"]);
-$("#decreaseweight").val(params["decreaseweight"]);
+//$("#decreaseweight").val(params["decreaseweight"]);
 
 var grundtomvikt = parseInt($("#grundtomvikt").val());
 var pilot = parseInt($("#pilot").val());
@@ -148,9 +149,32 @@ if(tp_startvikt >= tp_min && tp_startvikt <= tp_max) {
   tp_startvikt_colour = "red;";
 }
 
+var startvikt_colour = "green;";
+var torrvikt_colour = "green;";
+
+
+if(startvikt <= 450) {
+  startvikt_colour = "green;";
+} else {
+  startvikt_colour = "red;";
+}
+
+if(torrvikt <= 450) {
+  torrvikt_colour = "green;";
+} else {
+  torrvikt_colour = "red;";
+}
+
 sb.push("<h3>Resultat</h3>");
-sb.push("TP_torrvikt = <strong style='color:"+tp_torrvikt_colour+"'>" + Math.round(tp_torrvikt,2) + "</strong>.");
-sb.push("TP_startvikt = <strong style='color:"+tp_startvikt_colour+"'>" + Math.round(tp_startvikt) + "</strong>.");
+
+sb.push("TP_torrvikt = <strong style='color:"+tp_torrvikt_colour+"'>" + Math.round(tp_torrvikt,2) + "</strong>");
+sb.push("TP_startvikt = <strong style='color:"+tp_startvikt_colour+"'>" + Math.round(tp_startvikt) + "</strong>");
+sb.push("TP_min=<strong>237</strong>, TP_max=<strong>355.5</strong>");
+sb.push("");
+
+sb.push("Startvikt = <strong style='color:"+startvikt_colour+"'>" + Math.round(startvikt) + "</strong> kg");
+sb.push("Torrvikt = <strong style='color:"+torrvikt_colour+"'>" + Math.round(torrvikt) + "</strong> kg");
+
 
 
 $("#info").html(sb.join("<br>"));
