@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head><script src="assets/js/color-modes.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.115.4">
+    <title>Sidvindskomposant</title>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
+<link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  
+    </style>
+    <script src=
+    "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+        </script>
+    
+  </head>
+  <body>
+    <div class="container">
+    <h1>Sidvindskomposant</h1>
+
+    
+    <form class="">
+
+      <div class="form-group" method="GET" action="index.html">
+        <label for="">Vindriktning</label>
+        <input type="number" class="form-control" name="winddirection" id="winddirection" aria-describedby="emailHelp" placeholder="E.g. 180">
+        <small id="emailHelp" class="form-text text-muted">Where does the wind come from? You can get this from METAR.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="">Vindstyrka (kt)</label>
+        <input type="number" class="form-control" name="windspeed" id="windspeed" aria-describedby="emailHelp" placeholder="E.g. 5.">
+        <small id="emailHelp" class="form-text text-muted">How strong is it? You can get this from METAR.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="">Banor som finns</label>
+        <input type="text" class="form-control" name="runways" id="runways" aria-describedby="emailHelp" placeholder="E.g. 12 or 12, 33">
+        <small id="emailHelp" class="form-text text-muted">Provide one or multiple runway numbers. If you enter multiple runways, separate them with a comma.</small>
+      </div>
+
+
+      <input type="submit" class="btn btn-primary" value="Beräkna sidvindskomposant"/>
+
+      <br/><br/><br/>
+      <div class="" >
+        <p id="info"></p>
+      </div>
+  
+    </form>
+    </div>
+
+
+<script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+<script type="text/javascript">
+
+function getQueryParams(url) {
+    let queryParams = {};
+    // If no URL is provided, use the current window's URL
+    if(!url) {
+        url = window.location.href;
+    }
+
+    // Split the URL by the '?' to get the query string
+    let queryString = url.split('?')[1];
+    if(!queryString) {
+        return queryParams;
+    }
+
+    // Split the query string by '&' to get each key-value pair
+    let pairs = queryString.split('&');
+    for(let i = 0; i < pairs.length; i++) {
+        let pair = pairs[i].split('=');
+        let key = decodeURIComponent(pair[0]);
+        let value = decodeURIComponent(pair[1] || '');
+        queryParams[key] = value;
+    }
+
+    return queryParams;
+}
+
+var params = getQueryParams();
+
+$("#winddirection").val(params["winddirection"]);
+$("#windspeed").val(params["windspeed"]);
+$("#runways").val(params["runways"]);
+
+
+function calculate() 
+{
+  return ;
+}
+
+var winddir = $("#winddirection").val();
+
+var windspeed = $("#windspeed").val();
+
+var runways_raw = $("#runways").val().split(",");
+
+var runways = [];
+
+for(var i = 0; i < runways_raw.length; i++) {
+
+  var runway = parseInt(runways_raw[i].toString() + "0");
+
+  if(!runways.includes(runway)) {
+    runways.push(runway);
+  }
+
+  runway2 = (runway + 180) % 360;
+
+  if(!runways.includes(runway2)) {
+    runways.push(runway2);
+  }
+
+}
+
+var calc = [];
+var okToLand = [];
+// remember that better to have crosswind from left/right
+for(var i =0; i < runways.length; i++) {
+
+  var angle  = (runways[i] - winddir+360) % 360;
+  calc.push(angle) ; 
+  okToLand.push(90 - angle >= 0);
+}
+
+const smallestIndex = calc.reduce((acc, curr, idx, src) => {
+    return curr < src[acc] ? idx : acc;
+}, 0);
+
+smallestIndex;
+
+var sb = [];
+
+function wind(a,b){
+  if( ( b  % 90) > (a % 90) ) {
+    return "right";
+  }
+  else {
+    return "left";
+  }
+
+}
+
+sb.push("Pick runway <strong>" + runways[smallestIndex]/10 + "</strong>.");
+sb.push("In this case, you will have <strong>" + Math.round(   Math.sin(calc[smallestIndex]*Math.PI/180) * windspeed , 2) + "kt</strong> sidewind.");
+sb.push("Wind comes from the  <strong>" + wind(runways[smallestIndex], winddir)+ "</strong>.")
+
+sb.push("<hr>If you entered multiple runways, the ones shown below will have headwind:");
+for(var i = 0; i < okToLand.length; i++) {
+  if(okToLand[i]) {
+    sb.push("Runway <strong>" + runways[i]/10 +"</strong>, with <strong>" +wind(runways[i], winddir) +"</strong> sidewind of <strong>" + Math.round(   Math.sin(calc[i]*Math.PI/180) * windspeed , 2)  + "kt</strong>.");
+  }
+
+}
+$("#info").html(sb.join("<br>"));
+
+
+
+</script>
+
+    </body>
+</html>
