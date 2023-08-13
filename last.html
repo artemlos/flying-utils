@@ -25,7 +25,7 @@
     <h1>Lastbesked WT9 Dynamic</h1>
     <p>Alla vikter anges i kg. Bränslemängd anges i L.</p>
     
-    <form class="">
+    <form class="" id="last">
 
       <div class="form-group" method="GET" action="index.html">
         <label for="">Grundtomvikt</label>
@@ -118,7 +118,13 @@ $("#bagage").val(params["bagage"]);
 $("#fuel").val(params["fuel"]);
 //$("#decreaseweight").val(params["decreaseweight"]);
 
-var grundtomvikt = parseInt($("#grundtomvikt").val());
+$("#last").submit(function(e) {
+    e.preventDefault();
+    calculate();
+});
+
+function calculate(){
+  var grundtomvikt = parseInt($("#grundtomvikt").val());
 var pilot = parseInt($("#pilot").val());
 var bagage = parseInt($("#bagage").val());
 var fuel =parseInt($("#fuel").val())*0.71;
@@ -184,6 +190,9 @@ sb.push("Torrvikt = <strong style='color:"+torrvikt_colour+"'>" + Math.round(tor
 sb.push("Startvikt = <strong style='color:"+startvikt_colour+"'>" + Math.round(startvikt*100)/100 + "</strong> kg");
 
 $("#info").html(sb.join("<br>"));
+}
+
+
 
 
 
