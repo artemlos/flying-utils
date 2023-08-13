@@ -35,20 +35,20 @@
 
       <div class="form-group">
         <label for="">Förare + passagerare</label>
-        <input type="number" class="form-control" name="pilot" id="pilot" aria-describedby="emailHelp" placeholder="E.g. 60." step="any">
+        <input type="number" class="form-control" name="pilot" id="pilot"  placeholder="E.g. 60." step="any">
         <small id="emailHelp" class="form-text text-muted">Minst 65 kg.</small>
       </div>
 
       <div class="form-group">
         <label for="">Bagage (max 10kg)</label>
-        <input type="number" class="form-control" name="bagage" id="bagage" aria-describedby="emailHelp" placeholder="E.g. 12 or 12, 33" step="any">
-        <small id="emailHelp" class="form-text text-muted">Provide one or multiple runway numbers. If you enter multiple runways, separate them with a comma.</small>
+        <input type="number" class="form-control" name="bagage" id="bagage" placeholder="E.g. 10" step="any">
+        <small id="emailHelp" class="form-text text-muted"></small>
       </div>
 
       <div class="form-group">
         <label for="">Bränsle</label>
-        <input type="number" class="form-control" name="fuel" id="fuel" aria-describedby="emailHelp" placeholder="E.g. 12 or 12, 33" step="any">
-        <small id="emailHelp" class="form-text text-muted">Provide one or multiple runway numbers. If you enter multiple runways, separate them with a comma.</small>
+        <input type="number" class="form-control" name="fuel" id="fuel" placeholder="E.g. 75" step="any">
+        <small id="emailHelp" class="form-text text-muted">The amount of litres of fuel. We assume 0.71 KG/L.</small>
       </div>
 
       <!--
@@ -113,14 +113,14 @@ $("#fuel").val(params["fuel"]);
 var grundtomvikt = parseInt($("#grundtomvikt").val());
 var pilot = parseInt($("#pilot").val());
 var bagage = parseInt($("#bagage").val());
-var fuel =parseInt($("#fuel").val());
+var fuel =parseInt($("#fuel").val())*0.71;
 
 var sb = [];
 
-var grundtomvikt_arm = grundtomvikt * 126;
-var pilot_arm = pilot * 643;
-var bagage_arm = bagage * 1023;
-var fuel_arm = fuel * 163;
+var grundtomvikt_arm = grundtomvikt * 126.0;
+var pilot_arm = pilot * 643.0;
+var bagage_arm = bagage * 1023.0;
+var fuel_arm = fuel * 163.0;
 
 var torrvikt = grundtomvikt + pilot + bagage;
 var startvikt = torrvikt + fuel;
@@ -167,15 +167,13 @@ if(torrvikt <= 450) {
 
 sb.push("<h3>Resultat</h3>");
 
-sb.push("TP_torrvikt = <strong style='color:"+tp_torrvikt_colour+"'>" + Math.round(tp_torrvikt,2) + "</strong>");
-sb.push("TP_startvikt = <strong style='color:"+tp_startvikt_colour+"'>" + Math.round(tp_startvikt) + "</strong>");
+sb.push("TP_torrvikt = <strong style='color:"+tp_torrvikt_colour+"'>" + Math.round(tp_torrvikt*100)/100 + "</strong>");
+sb.push("TP_startvikt = <strong style='color:"+tp_startvikt_colour+"'>" + Math.round(tp_startvikt * 100)/100 + "</strong>");
 sb.push("TP_min=<strong>237</strong>, TP_max=<strong>355.5</strong>");
 sb.push("");
 
-sb.push("Startvikt = <strong style='color:"+startvikt_colour+"'>" + Math.round(startvikt) + "</strong> kg");
-sb.push("Torrvikt = <strong style='color:"+torrvikt_colour+"'>" + Math.round(torrvikt) + "</strong> kg");
-
-
+sb.push("Torrvikt = <strong style='color:"+torrvikt_colour+"'>" + Math.round(torrvikt*100)/100 + "</strong> kg");
+sb.push("Startvikt = <strong style='color:"+startvikt_colour+"'>" + Math.round(startvikt*100)/100 + "</strong> kg");
 
 $("#info").html(sb.join("<br>"));
 
