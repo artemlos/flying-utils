@@ -114,8 +114,21 @@ if($("#grundtomvikt").val() == 0 || $("#grundtomvikt").val() == "") {
 }
 
 $("#pilot").val(params["pilot"]);
+if($("#pilot").val() == 0 || $("#pilot").val() == "") {
+  $("#pilot").val(272.7);
+}
+
 $("#bagage").val(params["bagage"]);
+
+if($("#bagage").val() == 0 || $("#bagage").val() == "") {
+  $("#bagage").val(0);
+}
+
 $("#fuel").val(params["fuel"]);
+
+if($("#fuel").val() == 0 || $("#fuel").val() == "") {
+  $("#fuel").val(0);
+}
 //$("#decreaseweight").val(params["decreaseweight"]);
 
 $("#last").submit(function(e) {
