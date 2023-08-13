@@ -112,14 +112,18 @@ for(var i = 0; i < runways_raw.length; i++) {
 
   //var runway = parseInt(runways_raw[i].toString() + "0");
 
-  var runway = runways_raw[i];
+  var runway = parseInt(runways_raw[i]);
 
   if(!runways.includes(runway)) {
     runways.push(runway);
   }
 
   //runway2 = (runway + 180) % 360;
-  var runway2 = (runway * 10 +180) %360;
+  var runway2 = Math.round(((runway * 10 +180) %360)/10.0, 0);
+
+  if(runway2 == 0) {
+    runway2 = 36;
+  }
 
   if(!runways.includes(runway2)) {
     runways.push(runway2);
@@ -132,7 +136,7 @@ var okToLand = [];
 // remember that better to have crosswind from left/right
 for(var i =0; i < runways.length; i++) {
 
-  var angle  = Math.abs(runways[i] - winddir);
+  var angle  = Math.abs(runways[i]*10 - winddir);
 
   if(angle> 180){
     angle = 360-angle;
@@ -166,14 +170,14 @@ function getrunwayfromheading(r) {
 }
 
 
-sb.push("Pick runway <strong>" + runways[smallestIndex]/10 + "</strong>.");
+sb.push("Pick runway <strong>" + runways[smallestIndex] + "</strong>.");
 sb.push("In this case, you will have <strong>" + Math.round(   Math.sin(calc[smallestIndex]*Math.PI/180) * windspeed , 2) + "kt</strong> sidewind.");
-sb.push("Wind comes from the  <strong>" + wind(runways[smallestIndex], winddir)+ "</strong>.")
+sb.push("Wind comes from the  <strong>" + wind(runways[smallestIndex]*10, winddir)+ "</strong>.")
 
 sb.push("<hr>If you entered multiple runways, the ones shown below will have headwind:");
 for(var i = 0; i < okToLand.length; i++) {
   if(okToLand[i]) {
-    sb.push("Runway <strong>" + runways[i]/10 +"</strong>, with <strong>" +wind(runways[i], winddir) +"</strong> sidewind of <strong>" + Math.round(   Math.sin(calc[i]*Math.PI/180) * windspeed , 2)  + "kt</strong>.");
+    sb.push("Runway <strong>" + runways[i] +"</strong>, with <strong>" +wind(runways[i]*10, winddir) +"</strong> sidewind of <strong>" + Math.round(   Math.sin(calc[i]*Math.PI/180) * windspeed , 2)  + "kt</strong>.");
   }
 
 }
