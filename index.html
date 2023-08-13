@@ -110,14 +110,16 @@ var runways = [];
 
 for(var i = 0; i < runways_raw.length; i++) {
 
-  var runway = parseInt(runways_raw[i].toString() + "0");
+  //var runway = parseInt(runways_raw[i].toString() + "0");
+
+  var runway = runways_raw[i];
 
   if(!runways.includes(runway)) {
     runways.push(runway);
   }
 
-  runway2 = (runway + 180) % 360;
-  //runway2 = (runway * 10 +180) %360
+  //runway2 = (runway + 180) % 360;
+  var runway2 = (runway * 10 +180) %360;
 
   if(!runways.includes(runway2)) {
     runways.push(runway2);
