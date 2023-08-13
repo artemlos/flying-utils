@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="generator" content="Hugo 0.115.4">
-    <title>Sidvindskomposant</title>
+    <title>WT9 Lastinstruktion</title>
 
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
@@ -22,28 +22,41 @@
   </head>
   <body>
     <div class="container">
-    <h1>Sidvindskomposant</h1>
-
+    <h1>Lastbesked WT9 Dynamic</h1>
+    <p>Alla vikter anges i kg.</p>
     
     <form class="">
 
       <div class="form-group" method="GET" action="index.html">
-        <label for="">Vindriktning</label>
-        <input type="number" class="form-control" name="winddirection" id="winddirection" aria-describedby="emailHelp" placeholder="E.g. 180">
-        <small id="emailHelp" class="form-text text-muted">Where does the wind come from? You can get this from METAR.</small>
+        <label for="">Grundtomvikt</label>
+        <input type="number" class="form-control" name="grundtomvikt" id="grundtomvikt" placeholder="E.g. 272.7" value="272.7" step="any">
+        <small id="emailHelp" class="form-text text-muted">Please double check with the values in the binder with all the insurance documents that this value is correct.</small>
       </div>
 
       <div class="form-group">
-        <label for="">Vindstyrka (kt)</label>
-        <input type="number" class="form-control" name="windspeed" id="windspeed" aria-describedby="emailHelp" placeholder="E.g. 5.">
-        <small id="emailHelp" class="form-text text-muted">How strong is it? You can get this from METAR.</small>
+        <label for="">Förare + passagerare</label>
+        <input type="number" class="form-control" name="pilot" id="pilot" aria-describedby="emailHelp" placeholder="E.g. 60." step="any">
+        <small id="emailHelp" class="form-text text-muted">Minst 65 kg.</small>
       </div>
 
       <div class="form-group">
-        <label for="">Banor som finns</label>
-        <input type="text" class="form-control" name="runways" id="runways" aria-describedby="emailHelp" placeholder="E.g. 12 or 12, 33">
+        <label for="">Bagage (max 10kg)</label>
+        <input type="number" class="form-control" name="bagage" id="bagage" aria-describedby="emailHelp" placeholder="E.g. 12 or 12, 33" step="any">
         <small id="emailHelp" class="form-text text-muted">Provide one or multiple runway numbers. If you enter multiple runways, separate them with a comma.</small>
       </div>
+
+      <div class="form-group">
+        <label for="">Bränsle</label>
+        <input type="number" class="form-control" name="fuel" id="fuel" aria-describedby="emailHelp" placeholder="E.g. 12 or 12, 33" step="any">
+        <small id="emailHelp" class="form-text text-muted">Provide one or multiple runway numbers. If you enter multiple runways, separate them with a comma.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="">Beräknad viktminskning</label>
+        <input type="number" class="form-control" name="decreaseweight" id="decreaseweight" aria-describedby="emailHelp" placeholder="E.g. 12 or 12, 33" step="any">
+        <small id="emailHelp" class="form-text text-muted">Provide one or multiple runway numbers. If you enter multiple runways, separate them with a comma.</small>
+      </div>
+
 
 
       <input type="submit" class="btn btn-primary" value="Beräkna sidvindskomposant"/>
@@ -90,79 +103,56 @@ function getQueryParams(url) {
 
 var params = getQueryParams();
 
-$("#winddirection").val(params["winddirection"]);
-$("#windspeed").val(params["windspeed"]);
-$("#runways").val(params["runways"]);
+$("#grundtomvikt").val(params["grundtomvikt"]);
+$("#pilot").val(params["pilot"]);
+$("#bagage").val(params["bagage"]);
+$("#fuel").val(params["fuel"]);
+$("#decreaseweight").val(params["decreaseweight"]);
 
-
-function calculate() 
-{
-  return ;
-}
-
-var winddir = $("#winddirection").val();
-
-var windspeed = $("#windspeed").val();
-
-var runways_raw = $("#runways").val().split(",");
-
-var runways = [];
-
-for(var i = 0; i < runways_raw.length; i++) {
-
-  var runway = parseInt(runways_raw[i].toString() + "0");
-
-  if(!runways.includes(runway)) {
-    runways.push(runway);
-  }
-
-  runway2 = (runway + 180) % 360;
-
-  if(!runways.includes(runway2)) {
-    runways.push(runway2);
-  }
-
-}
-
-var calc = [];
-var okToLand = [];
-// remember that better to have crosswind from left/right
-for(var i =0; i < runways.length; i++) {
-
-  var angle  = (runways[i] - winddir+360) % 360;
-  calc.push(angle) ; 
-  okToLand.push(90 - angle >= 0);
-}
-
-const smallestIndex = calc.reduce((acc, curr, idx, src) => {
-    return curr < src[acc] ? idx : acc;
-}, 0);
-
-smallestIndex;
+var grundtomvikt = parseInt($("#grundtomvikt").val());
+var pilot = parseInt($("#pilot").val());
+var bagage = parseInt($("#bagage").val());
+var fuel =parseInt($("#fuel").val());
 
 var sb = [];
 
-function wind(a,b){
-  if( ( b  % 90) > (a % 90) ) {
-    return "right";
-  }
-  else {
-    return "left";
-  }
+var grundtomvikt_arm = grundtomvikt * 126;
+var pilot_arm = pilot * 643;
+var bagage_arm = bagage * 1023;
+var fuel_arm = fuel * 163;
 
+var torrvikt = grundtomvikt + pilot + bagage;
+var startvikt = torrvikt + fuel;
+var torrvikt_arm = grundtomvikt_arm + pilot_arm+ bagage_arm;
+var startvikt_arm = torrvikt_arm + fuel_arm;
+
+var tp_torrvikt = torrvikt_arm / torrvikt;
+var tp_startvikt = startvikt_arm / startvikt;
+
+var tp_min = 237;
+var tp_max = 355.5;
+
+var tp_torrvikt_colour = "green;" ;
+
+if(tp_torrvikt >= tp_min && tp_torrvikt <= tp_max) {
+  tp_torrvikt_colour = "green;";
+} else {
+  tp_torrvikt_colour = "red;";
 }
 
-sb.push("Pick runway <strong>" + runways[smallestIndex]/10 + "</strong>.");
-sb.push("In this case, you will have <strong>" + Math.round(   Math.sin(calc[smallestIndex]*Math.PI/180) * windspeed , 2) + "kt</strong> sidewind.");
-sb.push("Wind comes from the  <strong>" + wind(runways[smallestIndex], winddir)+ "</strong>.")
+var tp_startvikt_colour = "green;" ;
 
-sb.push("<hr>If you entered multiple runways, the ones shown below will have headwind:");
-for(var i = 0; i < okToLand.length; i++) {
-  if(okToLand[i]) {
-    sb.push("Runway <strong>" + runways[i]/10 +"</strong>, with <strong>" +wind(runways[i], winddir) +"</strong> sidewind of <strong>" + Math.round(   Math.sin(calc[i]*Math.PI/180) * windspeed , 2)  + "kt</strong>.");
-  }
-
+if(tp_startvikt >= tp_min && tp_startvikt <= tp_max) {
+  tp_startvikt_colour = "green;";
+} else {
+  tp_startvikt_colour = "red;";
 }
+
+sb.push("<h3>Resultat</h3>");
+sb.push("TP_torrvikt = <strong style='color:"+tp_torrvikt_colour+"'>" + Math.round(tp_torrvikt,2) + "</strong>.");
+sb.push("TP_startvikt = <strong style='color:"+tp_startvikt_colour+"'>" + Math.round(tp_startvikt) + "</strong>.");
+
+
 $("#info").html(sb.join("<br>"));
 
 
