@@ -171,9 +171,12 @@ function wind(a, b) {
 
 function wind2colour(wind) {
   if (wind>= 18) {
-    return "<strong style='color:red;'>" + wind + "kt</strong>";
-  } else {
-    return "<strong style='color:green;'>" + wind + "kt</strong>";
+    return "<strong class='text-danger'>" + wind + "kt</strong>";
+  } else if (wind >= 5) {
+    return "<strong class='text-warning'>" + wind + "kt</strong>";
+  }
+  else {
+    return "<strong class='text-success'>" + wind + "kt</strong>";
 
   }
 }
