@@ -109,27 +109,22 @@ function getQueryParams(url) {
 var params = getQueryParams();
 
 $("#grundtomvikt").val(params["grundtomvikt"]);
-if($("#grundtomvikt").val() == 0 || $("#grundtomvikt").val() == "") {
-  $("#grundtomvikt").val(272.7);
-}
+
 
 $("#pilot").val(params["pilot"]);
-if($("#pilot").val() == 0 || $("#pilot").val() == "") {
-  $("#pilot").val(0);
-}
+
 
 $("#bagage").val(params["bagage"]);
 
-if($("#bagage").val() == 0 || $("#bagage").val() == "") {
-  $("#bagage").val(0);
-}
+
 
 $("#fuel").val(params["fuel"]);
 
-if($("#fuel").val() == 0 || $("#fuel").val() == "") {
-  $("#fuel").val(0);
-}
 //$("#decreaseweight").val(params["decreaseweight"]);
+
+if($("#grundtomvikt").val() == 0 || $("#grundtomvikt").val() == "") {
+  $("#grundtomvikt").val(272.7);
+}
 
 $("#last").submit(function(e) {
     e.preventDefault();
@@ -137,6 +132,18 @@ $("#last").submit(function(e) {
 });
 
 function calculate(){
+  if($("#pilot").val() == 0 || $("#pilot").val() == "") {
+  $("#pilot").val(0);
+}
+  if($("#fuel").val() == 0 || $("#fuel").val() == "") {
+  $("#fuel").val(0);
+}
+
+if($("#bagage").val() == 0 || $("#bagage").val() == "") {
+  $("#bagage").val(0);
+}
+
+
   var grundtomvikt = parseInt($("#grundtomvikt").val());
 var pilot = parseInt($("#pilot").val());
 var bagage = parseInt($("#bagage").val());
